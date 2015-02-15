@@ -32,6 +32,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-static-libgcc" />
+			<Add option="-static-libstdc++" />
 			<Add option="-DLEAN_AND_MEAN" />
 			<Add directory="../../../SDKs/DirectX9-June2010/Include" />
 			<Add directory="./include" />
