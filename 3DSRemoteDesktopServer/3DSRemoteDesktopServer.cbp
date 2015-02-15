@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="3DSRemoteDesktopServer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="Shared\;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/3DSRemoteDesktopServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/3DSRemoteDesktopServer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-DLEAN_AND_MEAN" />
+			<Add directory="../../../SDKs/DirectX9-June2010/Include" />
+			<Add directory="./include" />
+			<Add directory="../3DSRemoteDesktopShared/include" />
+			<Add directory="../3DSRemoteDesktopShared/source" />
+			<Add directory="../external/MinGW/include" />
+		</Compiler>
+		<Linker>
+			<Add library="d3dx9" />
+			<Add library="d3d9" />
+			<Add library="ws2_32" />
+			<Add library="lz4" />
+			<Add directory="../../../SDKs/DirectX9-June2010/Lib/x86" />
+			<Add directory="../3DSRemoteDesktopShared/source" />
+			<Add directory="../external/MinGW/lib" />
+		</Linker>
+		<Unit filename="../3DSRemoteDesktopShared/source/RetroNetwork.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="Shared/" />
+		</Unit>
+		<Unit filename="include/CServer.h" />
+		<Unit filename="include/CaptureDX.h" />
+		<Unit filename="include/KeyboardCommand.h" />
+		<Unit filename="include/ServerSettings.h" />
+		<Unit filename="include/Timer.h" />
+		<Unit filename="source/CServer.cpp" />
+		<Unit filename="source/CaptureDX.cpp" />
+		<Unit filename="source/KeyboardCommand.cpp" />
+		<Unit filename="source/ServerSettings.cpp" />
+		<Unit filename="source/Timer.cpp" />
+		<Unit filename="source/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

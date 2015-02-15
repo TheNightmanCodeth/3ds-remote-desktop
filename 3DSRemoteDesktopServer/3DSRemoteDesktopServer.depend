@@ -1,0 +1,191 @@
+# depslib dependency file v1.0
+1423282066 source:f:\projects\3dsremotedesktopserver\cserver.cpp
+	"CServer.h"
+	<stdio.h>
+	<iostream>
+	"Packet.h"
+
+1423280152 f:\projects\3dsremotedesktopserver\cserver.h
+	<winsock2.h>
+	<windows.h>
+	"Timer.h"
+	"Packet.h"
+	"KeyboardCommand.h"
+
+1423283398 source:f:\projects\3dsremotedesktopserver\main.cpp
+	<windows.h>
+	<iostream>
+	<stdio.h>
+	"CServer.h"
+	"CaptureDX.h"
+
+1422860096 f:\projects\3dsremotedesktopserver\timer.h
+	<WinDef.h>
+
+1423280114 f:\projects\3dsremotedesktopserver\packet.h
+
+1422860635 source:f:\projects\3dsremotedesktopserver\timer.cpp
+	<windows.h>
+	"Timer.h"
+
+1423106496 f:\projects\3dsremotedesktopserver\keyboardcommand.h
+	<map>
+
+1423106812 source:f:\projects\3dsremotedesktopserver\keyboardcommand.cpp
+	"KeyboardCommand.h"
+	<windows.h>
+
+1423290636 source:f:\projects\3dsremotedesktopserver\capturedx.cpp
+	"CaptureDX.h"
+	<d3d9.h>
+	<d3dx9.h>
+	<d3dx9tex.h>
+	"Packet.h"
+	<fstream>
+
+1423267635 f:\projects\3dsremotedesktopserver\capturedx.h
+	<Windows.h>
+	"ServerSettings.h"
+
+1423185829 f:\projects\3dsremotedesktopserver\serversettings.h
+	<Windows.h>
+	<map>
+
+1423269260 source:f:\projects\3dsremotedesktopserver\serversettings.cpp
+	"ServerSettings.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3d9.h
+	<stdlib.h>
+	<objbase.h>
+	<windows.h>
+	"d3d9types.h"
+	"d3d9caps.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3d9types.h
+	<float.h>
+
+1274308617 f:\sdks\directx9-june2010\include\d3d9caps.h
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9.h
+	<limits.h>
+	"d3d9.h"
+	"d3dx9math.h"
+	"d3dx9core.h"
+	"d3dx9xof.h"
+	"d3dx9mesh.h"
+	"d3dx9shader.h"
+	"d3dx9effect.h"
+	"d3dx9tex.h"
+	"d3dx9shape.h"
+	"d3dx9anim.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9math.h
+	"d3dx9.h"
+	<math.h>
+	"d3dx9math.inl"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9math.inl
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9core.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9xof.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9mesh.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9shader.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9effect.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9tex.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9shape.h
+	"d3dx9.h"
+
+1274308617 f:\sdks\directx9-june2010\include\d3dx9anim.h
+
+1423959571 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\capturedx.cpp
+	"CaptureDX.h"
+	<d3d9.h>
+	<d3dx9.h>
+	<d3dx9tex.h>
+	<winuser.h>
+	"Packet.h"
+	<fstream>
+
+1423538675 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\capturedx.h
+	<Windows.h>
+	"ServerSettings.h"
+
+1423963003 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\serversettings.h
+	<Windows.h>
+	<map>
+
+1423530717 f:\projects\3dsremotedesktop\3dsremotedesktopshared\include\packet.h
+
+1423964143 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\cserver.cpp
+	"CServer.h"
+	<stdio.h>
+	<iostream>
+
+1423343527 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\cserver.h
+	"RetroNetwork.h"
+	"Timer.h"
+	"Packet.h"
+	"KeyboardCommand.h"
+
+1423538503 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\timer.h
+	<WinDef.h>
+
+1423962966 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\keyboardcommand.h
+	<map>
+
+1423963887 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\keyboardcommand.cpp
+	"KeyboardCommand.h"
+	"ServerSettings.h"
+	<windows.h>
+
+1423963998 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\main.cpp
+	<windows.h>
+	<iostream>
+	<stdio.h>
+	<lz4.h>
+	<queue>
+	"CServer.h"
+	"CaptureDX.h"
+
+1423962178 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\serversettings.cpp
+	"ServerSettings.h"
+	<iostream>
+	<fstream>
+	<string>
+
+1422860635 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\timer.cpp
+	<windows.h>
+	"Timer.h"
+
+1423445907 f:\projects\3dsremotedesktop\3dsremotedesktopshared\include\retronetwork.h
+	"Packet.h"
+	<sys/socket.h>
+	<netinet/in.h>
+	<netdb.h>
+	<arpa/inet.h>
+	<3ds.h>
+	<fcntl.h>
+	<sys/ioctl.h>
+	<errno.h>
+	<signal.h>
+	<winsock2.h>
+	<windows.h>
+
+1423448478 source:f:\projects\3dsremotedesktop\3dsremotedesktopshared\source\retronetwork.c
+	"RetroNetwork.h"
+	"ExtendedConsole.h"
+
+1423467124 f:\projects\3dsremotedesktop\external\mingw\include\lz4.h
+
