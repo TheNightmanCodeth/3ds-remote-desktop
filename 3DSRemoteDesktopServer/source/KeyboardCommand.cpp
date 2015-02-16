@@ -56,7 +56,7 @@ void CKeyboardCommand::Translate3DSButtonToKeyState(unsigned int BTN, bool bPres
 
 void CKeyboardCommand::Translate3DSAnalogToKeyState(short sX, short sY)
 {
-    int sDeadzone = m_pSettings->GetPort();
+    int sDeadzone = m_pSettings->GetDeadzone();
     // left
     if(sX < -sDeadzone)
     {
