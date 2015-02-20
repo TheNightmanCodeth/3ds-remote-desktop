@@ -92,6 +92,7 @@ private:
 
 	// functions
 	void ScaleImage();
+	void ForceWindowOnTop(HWND hWnd, bool bForce);
 public:
 	CCaptureDX(void);
 	~CCaptureDX(void);

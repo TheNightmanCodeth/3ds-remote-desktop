@@ -66,6 +66,7 @@ char* CCaptureDX::CaptureScreen()
 {
 
     HRESULT err = m_pDevice->GetFrontBufferData(0, m_pBufferSurface);
+    //HRESULT err = m_pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &m_pBufferSurface);
 	if(err != D3D_OK)
 	{
 	    switch(err)
@@ -84,8 +85,21 @@ char* CCaptureDX::CaptureScreen()
 	}
 
 
+    RECT _ScreenPos;
+    GetClientRect(m_pWindowHandle, &m_ScreenRect);
+    GetClientRect(m_pWindowHandle, &_ScreenPos);
+    MapWindowPoints(GetParent(m_pWindowHandle), (m_pWindowHandle), (LPPOINT)&_ScreenPos, 2);
+
+    m_ScreenRect.left -= _ScreenPos.left;
+    m_ScreenRect.top -= _ScreenPos.top;
+    m_ScreenRect.right -= _ScreenPos.left;
+    m_ScreenRect.bottom -= _ScreenPos.top;
+
+    printf("%d\t%d\n", _ScreenPos.left, _ScreenPos.top);
+    printf("%d\t%d\t%d\t%d\n", m_ScreenRect.left, m_ScreenRect.top, m_ScreenRect.right, m_ScreenRect.bottom);
+
 	err = D3DXLoadSurfaceFromSurface(m_pFinalSurface, NULL, NULL,
-		m_pBufferSurface, NULL, NULL, D3DX_FILTER_LINEAR, 0);
+		m_pBufferSurface, NULL, &m_ScreenRect, D3DX_FILTER_LINEAR, 0);
 	if(err != D3D_OK)
 	{
 		int invc = D3DERR_INVALIDCALL;
@@ -132,33 +146,6 @@ char* CCaptureDX::CaptureScreen()
 
 int CCaptureDX::Init(HWND windowHandle)
 {
-	// create the interface
-	m_pInterface = Direct3DCreate9(D3D_SDK_VERSION);
-
-	if(m_pInterface == NULL)
-	{
-		// couldnt create interface
-		return 1;
-	}
-
-	// create the present params
-	D3DPRESENT_PARAMETERS presentParams;
-	memset(&presentParams, 0, sizeof(D3DPRESENT_PARAMETERS));
-	presentParams.Windowed = true;
-	presentParams.SwapEffect = D3DSWAPEFFECT_COPY;
-
-	// create the device
-	UINT adapter = D3DADAPTER_DEFAULT;
-	D3DDEVTYPE deviceType = D3DDEVTYPE_HAL;
-	DWORD behaviorFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
-	m_pWindowHandle = windowHandle;
-
-	HRESULT error = m_pInterface->CreateDevice(adapter, deviceType, m_pWindowHandle, behaviorFlags, &presentParams, &m_pDevice);
-	if(FAILED(error))
-	{
-		return error;
-	}
-
 /*
 	// get the monitor the windows is a part of
 	HMONITOR monitor = MonitorFromWindow(m_pWindowHandle, MONITOR_DEFAULTTOPRIMARY);
@@ -173,13 +160,47 @@ int CCaptureDX::Init(HWND windowHandle)
     memcpy(&m_ScreenRect, &monitorInfo.rcMonitor, sizeof(RECT));
 */
 
-    GetClientRect(m_pWindowHandle, &m_ScreenRect);
+    GetClientRect(windowHandle, &m_ScreenRect);
 	m_unScreenWidth = m_ScreenRect.right - m_ScreenRect.left;
 	m_unScreenHeight = m_ScreenRect.bottom - m_ScreenRect.top;
 
 
+	// create the interface
+	m_pInterface = Direct3DCreate9(D3D_SDK_VERSION);
+
+	if(m_pInterface == NULL)
+	{
+		// couldnt create interface
+		return 1;
+	}
+
+	// create the present params
+	D3DPRESENT_PARAMETERS presentParams;
+	memset(&presentParams, 0, sizeof(D3DPRESENT_PARAMETERS));
+	presentParams.Windowed = true;
+	presentParams.SwapEffect = D3DSWAPEFFECT_COPY;
+	presentParams.BackBufferWidth = m_unScreenWidth;
+	presentParams.BackBufferHeight = m_unScreenHeight;
+	presentParams.hDeviceWindow = windowHandle;
+
+	// create the device
+	UINT adapter = D3DADAPTER_DEFAULT;
+	D3DDEVTYPE deviceType = D3DDEVTYPE_HAL;
+	DWORD behaviorFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+	m_pWindowHandle = windowHandle;
+
+	HRESULT error = m_pInterface->CreateDevice(adapter, deviceType, m_pWindowHandle, behaviorFlags, &presentParams, &m_pDevice);
+	if(FAILED(error))
+	{
+		return error;
+	}
+
+
+    // keep window on top
+    ForceWindowOnTop(m_pWindowHandle, true);
+
 	// create the surface to draw into
-	m_pDevice->CreateOffscreenPlainSurface(m_unScreenWidth, m_unScreenHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pBufferSurface, NULL);
+	m_pDevice->CreateOffscreenPlainSurface(1920, 1080, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pBufferSurface, NULL);
 	m_pDevice->CreateOffscreenPlainSurface(m_pSettings.m_unDestinationWidth, m_pSettings.m_unDestinationHeight,
                                         D3DFMT_R5G6B5, D3DPOOL_SYSTEMMEM, &m_pFinalSurface, NULL);
 
@@ -188,6 +209,7 @@ int CCaptureDX::Init(HWND windowHandle)
 
 void CCaptureDX::Shutdown()
 {
+    ForceWindowOnTop(m_pWindowHandle, false);
 	// shutdown DirectX stuff
 	if(m_pBufferSurface != NULL)
 	{
@@ -211,3 +233,9 @@ void CCaptureDX::Shutdown()
 	}
 }
 
+void CCaptureDX::ForceWindowOnTop(HWND hWnd, bool bForce)
+{
+    RECT rect;
+    GetWindowRect(hWnd, &rect);
+    SetWindowPos(hWnd, bForce == true?HWND_TOPMOST:HWND_NOTOPMOST, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_SHOWWINDOW);
+}

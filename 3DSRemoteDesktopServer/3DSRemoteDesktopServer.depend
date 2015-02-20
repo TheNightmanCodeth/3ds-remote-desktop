@@ -109,7 +109,7 @@
 
 1274308617 f:\sdks\directx9-june2010\include\d3dx9anim.h
 
-1423973360 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\capturedx.cpp
+1424470483 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\capturedx.cpp
 	"CaptureDX.h"
 	<d3d9.h>
 	<d3dx9.h>
@@ -118,7 +118,7 @@
 	"Packet.h"
 	<fstream>
 
-1423973356 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\capturedx.h
+1424469358 f:\projects\3dsremotedesktop\3dsremotedesktopserver\include\capturedx.h
 	<Windows.h>
 	"ServerSettings.h"
 
@@ -150,12 +150,13 @@
 	"ServerSettings.h"
 	<windows.h>
 
-1423973421 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\main.cpp
+1424470129 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\main.cpp
 	<windows.h>
 	<iostream>
 	<stdio.h>
 	<lz4.h>
 	<queue>
+	<vector>
 	"CServer.h"
 	"CaptureDX.h"
 

@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="include\CaptureDX.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\CaptureDX.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5312" topLine="135" />
+		</Cursor>
+	</File>
+	<File name="source\Timer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\3DSRemoteDesktopShared\source\RetroNetwork.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\3DSRemoteDesktopShared\source\RetroNetwork.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2792" topLine="47" />
+			<Cursor1 position="1412" topLine="83" />
 		</Cursor>
 	</File>
-	<File name="include\KeyboardCommand.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Timer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="source\CServer.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\KeyboardCommand.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
@@ -31,12 +26,7 @@
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="source\CaptureDX.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="source\KeyboardCommand.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\KeyboardCommand.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
@@ -46,7 +36,12 @@
 			<Cursor1 position="1520" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="source\main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Timer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\CaptureDX.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
@@ -56,9 +51,14 @@
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="source\Timer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\CServer.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5245" topLine="136" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
