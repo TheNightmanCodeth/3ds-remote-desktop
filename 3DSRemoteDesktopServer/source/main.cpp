@@ -145,6 +145,7 @@ int main()
 	consoleHandle = GetDesktopWindow();
     bool bGeneratedWindowList = EnumWindows( enumWindowsProc, NULL);
 
+	printf("  -1) Entire Desktop\n");
 	printf("Select a window to capture: ");
 
 	int nResult = -1;
