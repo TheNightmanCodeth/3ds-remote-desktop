@@ -38,7 +38,19 @@ void CWindowData::UpdateWindowInfo()
 
 void CWindowData::ForceWindowOnTop(bool bForce)
 {
-    SetWindowPos(m_WindowHandle, (bForce == true?HWND_TOPMOST:HWND_NOTOPMOST),
+    UpdateWindowInfo();
+    if(bForce)
+    {
+        SetFocus(m_WindowHandle);
+        SetWindowPos(m_WindowHandle, HWND_TOPMOST,
                  m_ScreenRect.left, m_ScreenRect.top, m_ScreenRect.right - m_ScreenRect.left, m_ScreenRect.bottom - m_ScreenRect.top,
-                 SWP_SHOWWINDOW);
+                 0);
+    }
+    else
+    {
+        SetWindowPos(m_WindowHandle, HWND_NOTOPMOST,
+                 m_ScreenRect.left, m_ScreenRect.top, m_ScreenRect.right - m_ScreenRect.left, m_ScreenRect.bottom - m_ScreenRect.top,
+                 0);
+    }
+
 }

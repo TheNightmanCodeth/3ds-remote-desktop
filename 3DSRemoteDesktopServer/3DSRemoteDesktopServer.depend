@@ -151,7 +151,7 @@
 	"ServerSettings.h"
 	<windows.h>
 
-1424563051 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\main.cpp
+1424564069 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\main.cpp
 	<windows.h>
 	<iostream>
 	<stdio.h>
@@ -201,7 +201,7 @@
 	<Vector>
 	"WindowData.h"
 
-1424562968 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\windowdata.cpp
+1424564189 source:f:\projects\3dsremotedesktop\3dsremotedesktopserver\source\windowdata.cpp
 	"WindowData.h"
 	<windows.h>
 

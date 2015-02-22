@@ -206,6 +206,8 @@ int main()
     }
     _server.Shutdown();
 
+    g_ScreenCapture.Shutdown();
+
     windowManager.ClearWindowList();
 
     // free the packet queue
