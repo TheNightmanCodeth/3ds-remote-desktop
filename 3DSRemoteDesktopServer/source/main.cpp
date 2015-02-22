@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "CServer.h"
 #include "CaptureDX.h"
+#include "WindowManager.h"
 
 using namespace std;
 unsigned int g_nBufferFrameLimit = 2;
@@ -99,37 +100,6 @@ ScreenPacketData* RequestScreenPacket()
     return pPacketToSend;
 }
 
-// TODO: Put all the windows lsiting crap in a class.  KEEP MAIN CLEAN!
-struct WindowInformation
-{
-    HWND _WindowHandle;
-    char* _szWindowText;
-};
-std::vector<WindowInformation> g_WindowList;
-BOOL CALLBACK enumWindowsProc( HWND hWnd, LPARAM lParam)
-{
-    int length = GetWindowTextLength( hWnd );
-    if( 0 == length )
-    {
-        return true;
-    }
-
-    if(!IsWindowVisible(hWnd))
-    {
-        return true;
-    }
-
-    char* windowTitle = new char[ length + 1 ];
-    memset( windowTitle, 0, ( length + 1 ) * sizeof( char ) );
-
-    GetWindowText( hWnd, windowTitle, length + 1 );
-
-    printf("  %d) %d\t- %s\n", g_WindowList.size(), hWnd, windowTitle);
-    WindowInformation desc = {hWnd, windowTitle};
-    g_WindowList.push_back(desc);
-
-    return true;
-}
 
 int main()
 {
@@ -138,33 +108,41 @@ int main()
 	printf("Initializing the Capture Device...\n");
     HWND consoleHandle;
 	HRESULT error = 0;
+
+	printf("Loading Server Settings - Config.ini\n");
 	CServerSettings* settings = CServerSettings::GetInstance();
 	settings->LoadSettings("Config.ini");
 
 	printf("Generating list of capturable windows...\n");
-	consoleHandle = GetDesktopWindow();
-    bool bGeneratedWindowList = EnumWindows( enumWindowsProc, NULL);
+    CWindowManager windowManager;
+    windowManager.RefreshWindowList();
 
-	printf("  -1) Entire Desktop\n");
-	printf("Select a window to capture: ");
+    CWindowManager::iterator windowIter = windowManager.begin();
+    int nCount = 0;
+    for(; windowIter != windowManager.end(); windowIter = windowIter.next())
+    {
+        printf("  %d) %d\t- %s\n", nCount++, (int)windowIter->GetHandle(), windowIter->GetWindowText());
+    }
+
+	printf("  -1) Entire Desktop\n\n");
+	printf("\t\tSelect a window to capture: ");
 
 	int nResult = -1;
 	cin >> nResult;
 
-    HWND focusWindow;
-    if(nResult > 0 && nResult < g_WindowList.size())
+    CWindowData* pFocusWindow;
+    if(nResult > 0 && nResult < windowManager.size())
     {
-        focusWindow = g_WindowList[nResult]._WindowHandle;
-        printf("\n***** Capturing %s! *****\n", g_WindowList[nResult]._szWindowText);
+        pFocusWindow = windowManager[nResult];
+        printf("\n***** Capturing %s! *****\n", windowManager[nResult]->GetWindowText());
     }
     else
     {
-        focusWindow = consoleHandle;
-        printf("\n Capturing Desktop!\n");
+        pFocusWindow = windowManager.GetDesktopWindow();
+        printf("\n***** Capturing Desktop! *****\\n");
     }
 
-	//focusWindow = FindWindow(0, "Minecraft");
-	error = g_ScreenCapture.Init(focusWindow);
+	error = g_ScreenCapture.Init(pFocusWindow);
 
 	if(error != 0)
 	{
@@ -228,18 +206,12 @@ int main()
     }
     _server.Shutdown();
 
+    windowManager.ClearWindowList();
+
     // free the packet queue
     while(g_ScreenBuffer.size() > 0)
     {
         free(g_ScreenBuffer.front());
         g_ScreenBuffer.pop();
     }
-
-    // free the window text
-    while(g_WindowList.size() > 0)
-    {
-        free(g_WindowList.back()._szWindowText);
-        g_WindowList.pop_back();
-    }
-
 }

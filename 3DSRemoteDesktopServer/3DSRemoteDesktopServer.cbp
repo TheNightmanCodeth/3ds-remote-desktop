@@ -61,11 +61,15 @@
 		<Unit filename="include/KeyboardCommand.h" />
 		<Unit filename="include/ServerSettings.h" />
 		<Unit filename="include/Timer.h" />
+		<Unit filename="include/WindowData.h" />
+		<Unit filename="include/WindowManager.h" />
 		<Unit filename="source/CServer.cpp" />
 		<Unit filename="source/CaptureDX.cpp" />
 		<Unit filename="source/KeyboardCommand.cpp" />
 		<Unit filename="source/ServerSettings.cpp" />
 		<Unit filename="source/Timer.cpp" />
+		<Unit filename="source/WindowData.cpp" />
+		<Unit filename="source/WindowManager.cpp" />
 		<Unit filename="source/main.cpp" />
 		<Extensions>
 			<code_completion />

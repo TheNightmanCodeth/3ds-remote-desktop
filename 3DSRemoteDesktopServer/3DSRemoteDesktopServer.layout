@@ -1,47 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Release" />
-	<File name="source\CaptureDX.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<ActiveTarget name="Debug" />
+	<File name="source\main.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5312" topLine="135" />
+			<Cursor1 position="6344" topLine="175" />
 		</Cursor>
 	</File>
-	<File name="source\Timer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\WindowData.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
+			<Cursor1 position="319" topLine="4" />
 		</Cursor>
 	</File>
-	<File name="..\3DSRemoteDesktopShared\source\RetroNetwork.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\CaptureDX.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1412" topLine="83" />
+			<Cursor1 position="3764" topLine="94" />
 		</Cursor>
 	</File>
 	<File name="source\KeyboardCommand.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\ServerSettings.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\KeyboardCommand.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="source\ServerSettings.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1520" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Timer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1522" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\CaptureDX.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
@@ -51,14 +26,59 @@
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="include\Timer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\ServerSettings.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1520" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\Timer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\WindowManager.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="425" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\3DSRemoteDesktopShared\source\RetroNetwork.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1412" topLine="83" />
+		</Cursor>
+	</File>
+	<File name="include\KeyboardCommand.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\CaptureDX.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1906" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="include\ServerSettings.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1522" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\WindowManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="387" topLine="4" />
+		</Cursor>
+	</File>
 	<File name="source\CServer.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1522" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="source\main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\WindowData.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5245" topLine="136" />
+			<Cursor1 position="196" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
