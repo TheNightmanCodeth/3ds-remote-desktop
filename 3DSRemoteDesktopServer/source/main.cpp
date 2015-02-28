@@ -32,15 +32,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <lz4.h>
 
 #include <queue>
+#include <vector>
 
 #include "CServer.h"
 #include "CaptureDX.h"
+#include "WindowManager.h"
 
 using namespace std;
 unsigned int g_nBufferFrameLimit = 2;
 std::queue<ScreenPacketData*> g_ScreenBuffer;
- CCaptureDX g_ScreenCapture;
+CCaptureDX g_ScreenCapture;
 
+
+// TODO: create a real state machine to be used between both client/server projects
+// NOTE: IF RETROZELDA THEN PORT MY FSMLIBRARY FROM JAVA && POTENTIALLY MAKE CLIENT USE C++(unless you decide to port to C)
+///////////////////////////////////////////////////////////////////////////////////////
 
 ScreenPacketData* CaptureScreenPacket()
 {
@@ -73,7 +79,8 @@ ScreenPacketData* CaptureScreenPacket()
 
 
     // free the data
-    free(pScreenInfo);
+    if(pScreenInfo)
+        free(pScreenInfo);
     return pCompressedPacket;
 }
 
@@ -93,6 +100,7 @@ ScreenPacketData* RequestScreenPacket()
     return pPacketToSend;
 }
 
+
 int main()
 {
     printf("LZ4 Library version = %d\n", LZ4_versionNumber());
@@ -100,12 +108,41 @@ int main()
 	printf("Initializing the Capture Device...\n");
     HWND consoleHandle;
 	HRESULT error = 0;
+
+	printf("Loading Server Settings - Config.ini\n");
 	CServerSettings* settings = CServerSettings::GetInstance();
 	settings->LoadSettings("Config.ini");
 
-	//consoleHandle = FindWindow(0, "Minecraft");
-	consoleHandle = GetDesktopWindow();
-	error = g_ScreenCapture.Init(consoleHandle);
+	printf("Generating list of capturable windows...\n");
+    CWindowManager windowManager;
+    windowManager.RefreshWindowList();
+
+    CWindowManager::iterator windowIter = windowManager.begin();
+    int nCount = 0;
+    for(; windowIter != windowManager.end(); windowIter = windowIter.next())
+    {
+        printf("  %d) %d\t- %s\n", nCount++, (int)windowIter->GetHandle(), windowIter->GetWindowText());
+    }
+
+	printf("  -1) Entire Desktop\n\n");
+	printf("\t\tSelect a window to capture: ");
+
+	int nResult = -1;
+	cin >> nResult;
+
+    CWindowData* pFocusWindow;
+    if(nResult > 0 && nResult < windowManager.size())
+    {
+        pFocusWindow = windowManager[nResult];
+        printf("\n***** Capturing %s! *****\n", windowManager[nResult]->GetWindowText());
+    }
+    else
+    {
+        pFocusWindow = windowManager.GetDesktopWindow();
+        printf("\n***** Capturing Desktop! *****\\n");
+    }
+
+	error = g_ScreenCapture.Init(pFocusWindow);
 
 	if(error != 0)
 	{
@@ -167,6 +204,11 @@ int main()
             cout << "Exiting..." << endl;
         }
     }
+    _server.Shutdown();
+
+    g_ScreenCapture.Shutdown();
+
+    windowManager.ClearWindowList();
 
     // free the packet queue
     while(g_ScreenBuffer.size() > 0)
@@ -174,6 +216,4 @@ int main()
         free(g_ScreenBuffer.front());
         g_ScreenBuffer.pop();
     }
-
-    _server.Shutdown();
 }
