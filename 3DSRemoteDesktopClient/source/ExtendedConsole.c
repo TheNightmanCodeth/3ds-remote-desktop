@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "mutex.h"
+
 #define CONSOLE_STRING_BUFFER_SIZE 64
 
 gfxScreen_t _Screen;
@@ -40,8 +42,9 @@ PrintConsole* _BottomConsole;
 const char* _szMoveCursor = "\x1b[%d;%dH";
 
 PrintConsole TopConsoleSettings;
-
 PrintConsole BottomConsoleSettings;
+
+volatile mutex* pMutex;
 
 
 void OpenExtendedConsole(gfxScreen_t DefaultScreen)
@@ -63,12 +66,17 @@ void OpenExtendedConsole(gfxScreen_t DefaultScreen)
         consoleSelect(_BottomConsole);
         break;
     }
+
+    pMutex = mutex_request(false);
+
 }
 
 // void PrintToScreen(gfxScreen_t TargetScreen, u16 X, u16 Y, char* szString, ...){}
 
 void PrintToScreen(gfxScreen_t TargetScreen, u16 X, u16 Y, char* szString, ...)
 {
+    mutex_lock(pMutex);
+
     PrintConsole* _Console;
     PrintConsole* _RetConsole;
     switch(TargetScreen)
@@ -101,4 +109,20 @@ void PrintToScreen(gfxScreen_t TargetScreen, u16 X, u16 Y, char* szString, ...)
     _Console->cursorY = retY;
 
     consoleSelect(_RetConsole);
+
+    mutex_unlock(pMutex);
+}
+
+void printf_safe(char* szString, ...)
+{
+    mutex_lock(pMutex);
+
+    va_list arguments;
+    va_start ( arguments, szString );
+
+    vprintf(szString, arguments);
+
+    va_end ( arguments );
+
+    mutex_unlock(pMutex);
 }

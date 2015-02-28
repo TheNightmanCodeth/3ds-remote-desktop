@@ -33,5 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void OpenExtendedConsole(gfxScreen_t DefaultScreen);
 
 void PrintToScreen(gfxScreen_t TargetScreen, u16 X, u16 Y, char* szString, ...);
+void printf_safe(char* szString, ...);
 
 #endif

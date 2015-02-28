@@ -25,39 +25,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "Client.h"
 #include <3ds.h>
+#include <lz4.h>
 
+#include "Client.h"
 #include "RetroNetwork.h"
 
 // other stuff
 #include "ExtendedConsole.h"
+#include "InputManager.h"
+#include "thread.h"
+#include "mutex.h"
 #include "List.h"
 
-#include "InputManager.h"
+volatile u32 _IP;
+volatile struct sockaddr_in _ServerAddr;
+volatile int _ClientSocket;
+volatile bool _bHasServerInfo = false;
+volatile char* _szServerIP;
+volatile short _sServerPort;
+volatile bool _bConnected = false;
 
-#include <lz4.h>
-/*
-#define PrintToScreen(...)
-#define printf(...)
-*/
-u32 _IP;
-struct sockaddr_in _ServerAddr;
-int _ClientSocket;
-bool _bHasServerInfo = false;
-char* _szServerIP;
-short _sServerPort;
-bool _bConnected = false;
-
-LinkedList* pPacketQueue = NULL;
+volatile LinkedList* pPacketQueue = NULL;
 
 typedef enum {CONNECTED, DISCONNECTED} ConnectionStatus_t;
-ConnectionStatus_t _Status;
+volatile ConnectionStatus_t _Status;
 
+// threads
+ThreadData* pThread;
+mutex* pMutex;
 
 void Dispatch(Packet* pPacket)
 {
-    printf("[recv][size: %d][type: %d]\n", pPacket->_PacketSize, pPacket->_PacketID);
+    printf_safe("[recv][size: %d][type: %d]\n", pPacket->_PacketSize, pPacket->_PacketID);
 
     switch(pPacket->_PacketID)
     {
@@ -73,12 +73,13 @@ void Dispatch(Packet* pPacket)
             // Decompress the screen data
             // TODO: display image in the correct place... not in client!
             // NOTE: decompressing directly into the screen for speed and to avoid allocations
+
             u8* TopFrameBuffer = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
             int nDecompressSize = LZ4_decompress_safe(pScreenShot->_ScreenData, TopFrameBuffer,
                                                       pScreenShot->_CompressedSize, pScreenShot->_TotalSize);
             if(nDecompressSize < 0)
             {
-                printf("Problem decompressing screen(%d)\n", nDecompressSize);
+                printf_safe("Problem decompressing screen(%d)\n", nDecompressSize);
             }
 
 
@@ -97,12 +98,12 @@ void Dispatch(Packet* pPacket)
             /*
             double dCurTime = m_pTimer.GetElapsedTime();
             double dDelta = dCurTime - m_dHandShakeTime;
-            printf("Handshake Response Time: %f seconds\n", dDelta);
+            printf_safe("Handshake Response Time: %f seconds\n", dDelta);
             */
         }
         break;
     case PACKET_MESSAGE:
-            printf("Server: %s\n", pPacket->_PacketData);
+            printf_safe("Server: %s\n", pPacket->_PacketData);
         break;
     };
 
@@ -113,7 +114,9 @@ void RecievePacketData()
 {
     int errno;
     Packet* pRecvPacket;
+    //mutex_lock(pMutex);
     int ret = RNRecieveData(_ClientSocket, &pRecvPacket, &errno);
+    //mutex_unlock(pMutex);
     if(ret > 0)
     {
         Dispatch(pRecvPacket);
@@ -121,7 +124,7 @@ void RecievePacketData()
     }
     else if(ret == 0)
     {
-        printf("We were disconnected from the server.\n");
+        printf_safe("We were disconnected from the server.\n");
         _Status = DISCONNECTED;
         closesocket(_ClientSocket);
     }
@@ -135,7 +138,7 @@ void RecievePacketData()
         case CASE:\
         PrintToScreen(GFX_TOP, 0, 0, "[ERR %d] %s", ret, REPORT);\
         if(nPrevRecvError != errno){\
-        printf("[ERR %d] %s\n", ret, REPORT);\
+        printf_safe("[ERR %d] %s\n", ret, REPORT);\
         nPrevRecvError = errno;\
         }\
         break;
@@ -171,12 +174,16 @@ void FlushSendQueue()
     {
         int nPacketLength = sizeof(Packet) + pToSend->_PacketSize;
 
-        printf("[send][size: %d][type: %d]", nPacketLength, pToSend->_PacketID);
+        printf_safe("[send][size: %d][type: %d]", nPacketLength, pToSend->_PacketID);
+
+        mutex_lock(pMutex);
         int nSendAmmount = send(_ClientSocket, pToSend, nPacketLength, 0);
+        mutex_unlock(pMutex);
+
         if(nSendAmmount < 0)
         {
             error = SOC_GetErrno();
-            printf("Problem contacting server. Error code: 0X%X(%d)", error, error);
+            printf_safe("Problem contacting server. Error code: 0X%X(%d)", error, error);
         }
 
         // release and refresh
@@ -186,12 +193,33 @@ void FlushSendQueue()
 }
 
 
+void StartThread()
+{
+    printf_safe("Thread starting...\n");
+    thread_start(pThread);
+    printf_safe("Thread Status: OX%X\n", pThread->ThreadStatus);
+}
+
+void ClientThread()
+{
+    while(1)
+    {
+        // recieve from server
+        RecievePacketData();
+        // printf_safe("Spam!\n");
+
+        if(_Status != CONNECTED)
+            break;
+    }
+}
+
+
 void InitClient()
 {
     _Status = DISCONNECTED;
     _bHasServerInfo = false;
 
-    printf("Initializing SOC.");
+    printf_safe("Initializing SOC.");
     SOC_Initialize((u32*)memalign(0x1000, 0x100000), 0x100000);
 
     // create the packet queue
@@ -200,14 +228,16 @@ void InitClient()
     // dont clsoe process when error occurs or something
     // signal(SIGPIPE, SIG_IGN);
 
-/*
-    _IP = (u32)gethostid();
-    printf("IP: %d", _IP);
-*/
+    // create our thread stuff
+    pMutex = mutex_request(false);
+    pThread = thread_request(ClientThread, 0);
 }
 
 void ShutdownClient()
 {
+    thread_close(pThread);
+    mutex_return(pMutex);
+
     if(_ClientSocket != INVALID_SOCKET)
     {
         closesocket(_ClientSocket);
@@ -225,11 +255,11 @@ void ConnectClientToServer(char* szServerIP, short sPort)
     }
 
     // open a new socket
-    printf("Opening Socket.\n");
+    printf_safe("Opening Socket.\n");
     _ClientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if(_ClientSocket == INVALID_SOCKET)
     {
-        printf("Unable to create socket.\n");
+        printf_safe("Unable to create socket.\n");
         return;
     }
 
@@ -237,7 +267,7 @@ void ConnectClientToServer(char* szServerIP, short sPort)
     long NoBlock = 1L;
     if (ioctl(_ClientSocket, (int)FIONBIO, (char *)&NoBlock))
     {
-        printf("ioctl FIONBIO call failed.  Unable to make non-blocking.\n");
+        printf_safe("ioctl FIONBIO call failed.  Unable to make non-blocking.\n");
     }
 
 
@@ -251,7 +281,7 @@ void ConnectClientToServer(char* szServerIP, short sPort)
     _sServerPort = sPort;
     _szServerIP = malloc(strlen(szServerIP));
     strcpy(_szServerIP, szServerIP);
-    printf("Set Server: %s:%d\n", _szServerIP, _sServerPort);
+    printf_safe("Set Server: %s:%d\n", _szServerIP, _sServerPort);
 
     // set the server info
     _ServerAddr.sin_family = AF_INET;
@@ -261,7 +291,45 @@ void ConnectClientToServer(char* szServerIP, short sPort)
     _bHasServerInfo = true;
 }
 
-int nPrevConnectError = 0;
+void DisconnectClient()
+{
+
+    shutdown(_ClientSocket, 0);
+    closesocket(_ClientSocket);
+
+
+    // ensure we are freed
+    if(_szServerIP != NULL)
+    {
+        free(_szServerIP);
+    }
+}
+
+
+void SendData(unsigned int nPacketID, unsigned int nDataSize, void* Data)
+{
+    printf_safe("[send][size: %d][type: %d]\n", nDataSize, nPacketID);
+
+    //mutex_lock(pMutex);
+    int nSendAmmount = RNSendData(_ClientSocket, nPacketID, nDataSize, Data);
+    //mutex_unlock(pMutex);
+
+    if(nSendAmmount < 0)
+    {
+        int error = SOC_GetErrno();
+        printf_safe("Problem contacting server. Error code: 0X%X(%d)\n", error, error);
+    }
+}
+
+int IsClientConnected()
+{
+    if(_Status == CONNECTED)
+        return 1;
+    return 0;
+}
+
+
+volatile int nPrevConnectError = 0;
 void RunClient()
 {
     switch(_Status)
@@ -277,8 +345,7 @@ void RunClient()
             SendData(PACKET_SCREENRETRIEVED, 0, NULL);
         }
 
-        // recieve from server
-        RecievePacketData();
+        //RecievePacketData();
 
         break;
     case DISCONNECTED:
@@ -289,9 +356,10 @@ void RunClient()
             int ret = connect(_ClientSocket, (struct sockaddr *)&_ServerAddr, sizeof(_ServerAddr));
             if(ret >= 0)
             {
-                printf("Connection to server successful!\n");
+                printf_safe("Connection to server successful!\n");
                 //SendData(PACKET_SCREENRETRIEVED, 0, NULL);
                 _Status = CONNECTED;
+                StartThread();
             }
             else
             {
@@ -299,7 +367,7 @@ void RunClient()
                 case CASE:\
                 PrintToScreen(GFX_TOP, 1, 5, "[ERR %d] %s", ret, REPORT);\
                 if(nPrevConnectError != error){\
-                printf("[ERR %d] %s\n", ret, REPORT);\
+                printf_safe("[ERR %d] %s\n", ret, REPORT);\
                 nPrevConnectError = error;\
                 }\
                 break;
@@ -329,15 +397,16 @@ void RunClient()
                 PRINT_CRAP(ENOBUFS, "No buffer space is available.")
                 PRINT_CRAP(EOPNOTSUPP, "The socket is listening and cannot be connected.")
                 case EISCONN:
-                    printf("[ERR: EISCONN]Connection to server successful?\n");
+                    printf_safe("[ERR: EISCONN]Connection to server successful.\n");
                     _Status = CONNECTED;
+                    StartThread();
                     break;
                 default:
                     PrintToScreen(GFX_TOP, 1, 1, "connect() failed(ret %d) with code: 0X%X(%d)", ret, error, error);
                     break;
                 }
                 #undef PRINT_CRAP
-                //printf("Connection to server failed!\n");
+                //printf_safe("Connection to server failed!\n");
                 // TODO: Handle ewouldblock and other stuff needed for non-blocking sockets
             }
 
@@ -352,43 +421,6 @@ void RunClient()
         break;
     };
 }
-
-void DisconnectClient()
-{
-
-    shutdown(_ClientSocket, 0);
-    closesocket(_ClientSocket);
-
-
-    // ensure we are freed
-    if(_szServerIP != NULL)
-    {
-        free(_szServerIP);
-    }
-}
-
-
-void SendData(unsigned int nPacketID, unsigned int nDataSize, void* Data)
-{
-    printf("[send][size: %d][type: %d]\n", nDataSize, nPacketID);
-    int nSendAmmount = RNSendData(_ClientSocket, nPacketID, nDataSize, Data);
-    if(nSendAmmount < 0)
-    {
-        int error = SOC_GetErrno();
-        printf("Problem contacting server. Error code: 0X%X(%d)\n", error, error);
-    }
-}
-
-int IsClientConnected()
-{
-    if(_Status == CONNECTED)
-        return 1;
-    return 0;
-}
-
-
-
-
 
 
 
