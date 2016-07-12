@@ -42,14 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <signal.h>
 
-#define GETERRNO SOC_GetErrno
-
 #else
 
 #include <winsock2.h>
 #include <windows.h>
-
-#define GETERRNO WSAGetLastError
 
 #endif // _3DS
 

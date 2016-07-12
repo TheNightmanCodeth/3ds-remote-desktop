@@ -119,6 +119,14 @@ void IPInput()
     }
 }
 
+u8 getModel()
+{
+	u8 model = 0;
+	CFGU_GetSystemModel(&model);
+	
+	return model;
+}
+
 int main()
 {
     szIP = (char*)malloc(15);
@@ -128,17 +136,20 @@ int main()
 	// Initialize services
 	srvInit();
 	aptInit();
+	cfguInit();
 	hidInit();
 	gfxInit(GSP_RGB565_OES, GSP_RGB565_OES, false);
 	//gfxSet3D(true); // uncomment if using stereoscopic 3D
-
+	
+	if ((getModel() == 2) || (getModel() == 4))
+		osSetSpeedupEnable(true);
 
     // start console
     //consoleDebugInit(debugDevice_CONSOLE);
     OpenExtendedConsole(GFX_BOTTOM); // NOTE: Built-in colsole forces GSP_RGB565_OES
     // printf("Opened\tConsole!");
 
-    printf("LZ4 Library version = %d\n", LZ4_versionNumber());
+    //printf("LZ4 Library version = %d\n", LZ4_versionNumber());
 
     InitInput();
     InitClient();
@@ -189,6 +200,7 @@ int main()
 	// Exit services
 	gfxExit();
 	hidExit();
+	cfguExit();
 	aptExit();
 	srvExit();
 	return 0;

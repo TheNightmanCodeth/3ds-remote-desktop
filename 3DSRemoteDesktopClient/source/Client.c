@@ -74,17 +74,17 @@ void Dispatch(Packet* pPacket)
     case PACKET_SCREEN:
         {
             // We recieved the screen
-            ScreenPacketData* pScreenShot = (ScreenPacketData*)pPacket->_PacketData;
+			// ScreenPacketData* pScreenShot = (ScreenPacketData*)pPacket->_PacketData;
 
             // Decompress the screen data
             // TODO: display image in the correct place... not in client!
             // NOTE: decompressing directly into the screen for speed and to avoid allocations
-            u8* TopFrameBuffer = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
+            /*u8* TopFrameBuffer = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
             int nDecompressSize = LZ4_decompress_safe(pScreenShot->_ScreenData, TopFrameBuffer, pScreenShot->_CompressedSize, pScreenShot->_TotalSize);
             if(nDecompressSize < 0)
             {
                 printf("Problem decompressing screen(%d)\n", nDecompressSize);
-            }
+            }*/
 
 
 

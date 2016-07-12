@@ -69,7 +69,7 @@ int ListPush(LinkedList* pList, char* pData)
     if(pEndNode == NULL)
     {
         // the list is empty
-        ((_PrivateListData*)pList)->pListData = pNewNode;
+        (pList)->pListData = pNewNode;
     }
     else
     {
@@ -98,10 +98,10 @@ char* ListPop(LinkedList* pList)
 
 void DestroyList(LinkedList* pList)
 {
-    _PrivateListData* pCurNode = ListPop(pList);
+    _PrivateListData* pCurNode = (_PrivateListData*) ListPop(pList);
     while(pCurNode != NULL)
     {
-        pCurNode = ListPop(pList);
+        pCurNode = (_PrivateListData*) ListPop(pList);
     }
 
     free(pList);

@@ -41,7 +41,7 @@ APP_AUTHOR	:= RetroZelda
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard
+ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mfpu=fpv4-sp-d16
 
 CFLAGS	:=	-g -Wall -O3 -mword-relocations \
 			-fomit-frame-pointer -ffast-math \

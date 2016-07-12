@@ -25,6 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <stdlib.h>
+#include <string.h>
+//#include <malloc.h>
 #include "RetroNetwork.h"
 
 #ifdef _3DS
@@ -105,7 +108,7 @@ int RNRecieveData(int RecvSocket, Packet** pRecvPacket, int* nGetErrno)
                 {
                 //printf("5.");
                     // if not EWOULDBLOCK, leave while setting the error
-                    unsigned int error = GETERRNO();
+                    unsigned int error = errno;
                 //printf("6(%d).", error);
                     #ifdef _3DS
                     if(-error != EWOULDBLOCK && -error != EAGAIN)
@@ -146,7 +149,7 @@ int RNRecieveData(int RecvSocket, Packet** pRecvPacket, int* nGetErrno)
         {
             if(nGetErrno)
             {
-                *nGetErrno = GETERRNO();
+                *nGetErrno = errno;
                 return -1;
             }
         }
