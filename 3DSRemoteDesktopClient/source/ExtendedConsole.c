@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdarg.h>
 
 #define CONSOLE_STRING_BUFFER_SIZE 64
@@ -69,8 +70,8 @@ void OpenExtendedConsole(gfxScreen_t DefaultScreen)
 
 void PrintToScreen(gfxScreen_t TargetScreen, u16 X, u16 Y, char* szString, ...)
 {
-    PrintConsole* _Console;
-    PrintConsole* _RetConsole;
+    PrintConsole* _Console = 0;
+    PrintConsole* _RetConsole = 0;
     switch(TargetScreen)
     {
     case GFX_TOP:

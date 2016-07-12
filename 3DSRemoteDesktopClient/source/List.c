@@ -25,8 +25,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
 #include "List.h"
-#define NULL 0 // normall from stdlib
+
 typedef struct _PrivateListData_t
 {
     char* pListData;

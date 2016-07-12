@@ -128,7 +128,7 @@ int main()
 	// Initialize services
 	srvInit();
 	aptInit();
-	hidInit(NULL);
+	hidInit();
 	gfxInit(GSP_RGB565_OES, GSP_RGB565_OES, false);
 	//gfxSet3D(true); // uncomment if using stereoscopic 3D
 
@@ -150,7 +150,7 @@ int main()
 
 		// clear the screens
         u8* TopFrameBuffer = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
-        u8* BottomFrameBuffer = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
+       // u8* BottomFrameBuffer = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL); // commenting this as it is unused
 
         //memset(TopFrameBuffer, 0, 240*400*3);
         //memset(BottomFrameBuffer, 0, 240*320*3);

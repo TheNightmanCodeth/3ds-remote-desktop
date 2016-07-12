@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
 
+#define SOC_ALIGN       0x1000
+#define SOC_BUFFERSIZE  0x100000
+
 void InitClient();
 void ShutdownClient();
 void ConnectClientToServer(char* szServerIP, short sPort);

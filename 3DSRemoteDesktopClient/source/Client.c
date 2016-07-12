@@ -27,7 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Client.h"
 #include <3ds.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+#include <errno.h>
 
+#define INVALID_SOCKET (int)(~0)
 #include "RetroNetwork.h"
 
 // other stuff
@@ -74,8 +80,7 @@ void Dispatch(Packet* pPacket)
             // TODO: display image in the correct place... not in client!
             // NOTE: decompressing directly into the screen for speed and to avoid allocations
             u8* TopFrameBuffer = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
-            int nDecompressSize = LZ4_decompress_safe(pScreenShot->_ScreenData, TopFrameBuffer,
-                                                      pScreenShot->_CompressedSize, pScreenShot->_TotalSize);
+            int nDecompressSize = LZ4_decompress_safe(pScreenShot->_ScreenData, TopFrameBuffer, pScreenShot->_CompressedSize, pScreenShot->_TotalSize);
             if(nDecompressSize < 0)
             {
                 printf("Problem decompressing screen(%d)\n", nDecompressSize);
@@ -111,9 +116,9 @@ void Dispatch(Packet* pPacket)
 int nPrevRecvError = 0;
 void RecievePacketData()
 {
-    int errno;
+    int _errno;
     Packet* pRecvPacket;
-    int ret = RNRecieveData(_ClientSocket, &pRecvPacket, &errno);
+    int ret = RNRecieveData(_ClientSocket, &pRecvPacket, &_errno);
     if(ret > 0)
     {
         Dispatch(pRecvPacket);
@@ -134,12 +139,12 @@ void RecievePacketData()
         #define PRINT_CRAP(CASE, REPORT) \
         case CASE:\
         PrintToScreen(GFX_TOP, 0, 0, "[ERR %d] %s", ret, REPORT);\
-        if(nPrevRecvError != errno){\
+        if(nPrevRecvError != _errno){\
         printf("[ERR %d] %s\n", ret, REPORT);\
-        nPrevRecvError = errno;\
+        nPrevRecvError = _errno;\
         }\
         break;
-        switch(-errno)
+        switch(-_errno)
         {
             // PRINT_CRAP(EAGAIN, "EAGAIN: Trying again..."); // NOTE: Same code as EWOULDBLOCK
             PRINT_CRAP(EBADF, "The socket argument is not a valid file descriptor.");
@@ -156,7 +161,7 @@ void RecievePacketData()
         case EWOULDBLOCK:
             break;
         default:
-            PrintToScreen(GFX_TOP, 0, 0, "recv() failed(%d) with code: 0X%X(%d)", ret, errno, errno);
+            PrintToScreen(GFX_TOP, 0, 0, "recv() failed(%d) with code: 0X%X(%d)", ret, _errno, _errno);
             break;
         }
         #undef PRINT_CRAP
@@ -175,7 +180,7 @@ void FlushSendQueue()
         int nSendAmmount = send(_ClientSocket, pToSend, nPacketLength, 0);
         if(nSendAmmount < 0)
         {
-            error = SOC_GetErrno();
+            error = errno;
             printf("Problem contacting server. Error code: 0X%X(%d)", error, error);
         }
 
@@ -185,6 +190,39 @@ void FlushSendQueue()
     }
 }
 
+static u32 *SOC_buffer = 0;
+
+u32 soc_init(void) 
+{
+	Result ret;
+	u32 result = 0;
+	
+	SOC_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+	if (SOC_buffer != 0) 
+	{
+		ret = socInit(SOC_buffer, SOC_BUFFERSIZE);
+		if (ret == 0) 
+		{
+			result = 1;
+		} 
+		else 
+		{
+			free(SOC_buffer);
+		}
+	}
+	return result;
+}
+
+u32 soc_exit(void) 
+{
+	if (SOC_buffer) 
+	{
+		socExit();
+		free(SOC_buffer);
+		SOC_buffer = 0;
+	}
+	return 0;
+}
 
 void InitClient()
 {
@@ -192,7 +230,7 @@ void InitClient()
     _bHasServerInfo = false;
 
     printf("Initializing SOC.");
-    SOC_Initialize((u32*)memalign(0x1000, 0x100000), 0x100000);
+    soc_init();
 
     // create the packet queue
     pPacketQueue = CreateList();
@@ -213,7 +251,7 @@ void ShutdownClient()
         closesocket(_ClientSocket);
     }
 
-	SOC_Shutdown();
+	soc_exit();
 }
 
 void ConnectClientToServer(char* szServerIP, short sPort)
@@ -303,7 +341,7 @@ void RunClient()
                 nPrevConnectError = error;\
                 }\
                 break;
-                unsigned int error = SOC_GetErrno();
+                unsigned int error = errno;
                 switch(-error)
                 {
                 PRINT_CRAP(EADDRNOTAVAIL, "The specified address is not available from the local machine.")
@@ -367,14 +405,13 @@ void DisconnectClient()
     }
 }
 
-
 void SendData(unsigned int nPacketID, unsigned int nDataSize, void* Data)
 {
     printf("[send][size: %d][type: %d]\n", nDataSize, nPacketID);
     int nSendAmmount = RNSendData(_ClientSocket, nPacketID, nDataSize, Data);
     if(nSendAmmount < 0)
     {
-        int error = SOC_GetErrno();
+        int error = errno;
         printf("Problem contacting server. Error code: 0X%X(%d)\n", error, error);
     }
 }
@@ -385,11 +422,3 @@ int IsClientConnected()
         return 1;
     return 0;
 }
-
-
-
-
-
-
-
-
