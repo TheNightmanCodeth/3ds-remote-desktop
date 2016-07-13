@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <stdio.h>
 
-#include <lz4.h>
+#include "lz4.h"
 
 #include <queue>
 #include <vector>

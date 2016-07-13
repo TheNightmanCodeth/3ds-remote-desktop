@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <malloc.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #define INVALID_SOCKET (int)(~0)
 #include "RetroNetwork.h"
@@ -42,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "InputManager.h"
 
-#include <lz4.h>
+#include "lz4.h"
 /*
 #define PrintToScreen(...)
 #define printf(...)
@@ -254,6 +255,24 @@ void ShutdownClient()
 	soc_exit();
 }
 
+bool SetSocketBlockingEnabled(int fd, bool blocking)
+{
+   if (fd < 0) 
+	   return false;
+
+#ifdef WIN32
+   unsigned long mode = blocking ? 0 : 1;
+   return (ioctlsocket(fd, FIONBIO, &mode) == 0) ? true : false;
+#else
+   int flags = fcntl(fd, F_GETFL, 0);
+   if (flags < 0) 
+	   return false;
+   flags = blocking ? (flags&~O_NONBLOCK) : (flags|O_NONBLOCK);
+   
+   return (fcntl(fd, F_SETFL, flags) == 0) ? true : false;
+#endif
+}
+
 void ConnectClientToServer(char* szServerIP, short sPort)
 {
     // close socket if exists
@@ -272,8 +291,7 @@ void ConnectClientToServer(char* szServerIP, short sPort)
     }
 
     // stop blocking
-    long NoBlock = 1L;
-    if (ioctl(_ClientSocket, (int)FIONBIO, (char *)&NoBlock))
+	if(!SetSocketBlockingEnabled(_ClientSocket, false))
     {
         printf("ioctl FIONBIO call failed.  Unable to make non-blocking.\n");
     }

@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "InputManager.h"
 #include "ExtendedConsole.h"
 
-#include <lz4.h>
+#include "lz4.h"
 
 #define HANDLE_BUTTON(BTN)\
     temp = (unsigned int)(BTN);\
